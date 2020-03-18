@@ -1,8 +1,9 @@
 # Fraction
 Fraction is a value type that represents the quotient of two numbers (like `1/3`), without loss of precision, and with support for basic arithmetic operations.
 
-The Fraction type supports addition, subtraction, multiplication and division, both through dedicated functions, and through overloading the corresponding operators.
-    E.g. you can add two fractions in any of the following ways:
+The Fraction type supports **addition**, **subtraction**, **multiplication** and **division**, both through dedicated functions, and through overloading the corresponding operators. It also conforms to the **Comparable** protocol to allow comparing fractions and testing them for equality.
+
+    Per example, you can add two fractions in any of the following ways:
 
         var f1 = Fraction(numerator: 1, denominator: 2)
         let f2= Fraction(numerator: 3, denominator: 4)
