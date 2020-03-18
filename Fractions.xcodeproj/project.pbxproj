@@ -10,6 +10,7 @@
 		6D2D716C24201E7700A6D32E /* Fractions.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D2D716224201E7700A6D32E /* Fractions.framework */; };
 		6D2D717124201E7700A6D32E /* FractionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D2D717024201E7700A6D32E /* FractionsTests.swift */; };
 		6D2D717324201E7700A6D32E /* Fractions.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D2D716524201E7700A6D32E /* Fractions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6D2D717D24201EA500A6D32E /* Fraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D2D717C24201EA500A6D32E /* Fraction.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +30,7 @@
 		6D2D716B24201E7700A6D32E /* FractionsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FractionsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D2D717024201E7700A6D32E /* FractionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FractionsTests.swift; sourceTree = "<group>"; };
 		6D2D717224201E7700A6D32E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6D2D717C24201EA500A6D32E /* Fraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fraction.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +75,7 @@
 			children = (
 				6D2D716524201E7700A6D32E /* Fractions.h */,
 				6D2D716624201E7700A6D32E /* Info.plist */,
+				6D2D717C24201EA500A6D32E /* Fraction.swift */,
 			);
 			path = Fractions;
 			sourceTree = "<group>";
@@ -148,6 +151,7 @@
 				TargetAttributes = {
 					6D2D716124201E7700A6D32E = {
 						CreatedOnToolsVersion = 11.4;
+						LastSwiftMigration = 1140;
 					};
 					6D2D716A24201E7700A6D32E = {
 						CreatedOnToolsVersion = 11.4;
@@ -195,6 +199,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D2D717D24201EA500A6D32E /* Fraction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,6 +345,7 @@
 		6D2D717724201E7700A6D32E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 689JQUEJ8U;
@@ -356,6 +362,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.sintraworks.Fractions;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -364,6 +371,7 @@
 		6D2D717824201E7700A6D32E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 689JQUEJ8U;
@@ -388,6 +396,7 @@
 		6D2D717A24201E7700A6D32E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 689JQUEJ8U;
 				INFOPLIST_FILE = FractionsTests/Info.plist;
@@ -406,6 +415,7 @@
 		6D2D717B24201E7700A6D32E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 689JQUEJ8U;
 				INFOPLIST_FILE = FractionsTests/Info.plist;
