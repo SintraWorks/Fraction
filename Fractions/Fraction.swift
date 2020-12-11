@@ -66,6 +66,18 @@ public struct Fraction {
         self.denominator = denominator
     }
 
+    /// Initialize a Fraction from an integer
+    /// - Parameter numerator: The fraction's numerator (valid range: Int.min + 1 ... Int.max)
+    ///
+    /// The lower end of the valid range for the parameter is Int.min + 1, because you cannot flip Int.min to to its positive counterpart –it results in an overflow–
+    /// which may happen in the `reduce()` function.
+    public init?(_ numerator: Int) {
+        guard numerator > Int.min else { return nil }
+
+        self.numerator = numerator
+        self.denominator = 1
+    }
+
     /// Reduce a fraction to its Greatest Common Denominator
     public mutating func reduce() {
         let (absNumerator, numeratorSign) = numerator < 0 ? (-numerator, -1) : (numerator, 1)
