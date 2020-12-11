@@ -11,7 +11,7 @@ The Fraction type supports **addition**, **subtraction**, **multiplication** and
         f1.add(f2) // mutating, f1 now holds the result of the addition
         let result1 = f1.adding(f2) // non-mutating
         let result2 = f1 + f2 // non-mutating
-        let f1 += f2 //mutating, f1 now holds the result of the addition
+        let f1 += f2 // mutating, f1 now holds the result of the addition
 
 By default arithmetic operations will reduce the result to its **Greatest Common Denominator**. The function based variants allow turning off this behaviour by explicitly forbidding reduction:
 
