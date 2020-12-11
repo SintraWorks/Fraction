@@ -42,11 +42,15 @@
 
     - Warning: Fraction will trap if any operation results in an overflow or underflow.
  */
-struct Fraction {
+public struct Fraction {
+    public enum FractionError: Error {
+        case illegalDivision
+    }
+
     /// The fraction's numerator (valid range: Int.min + 1 ... Int.max)
-    var numerator: Int
+    public var numerator: Int
     /// The fraction's denominator (valid range: Int.min + 1 ... Int.max)
-    var denominator: Int
+    public var denominator: Int
 
     /// Initialize a Fraction
     /// - Parameter numerator: The fraction's numerator (valid range: Int.min + 1 ... Int.max)
@@ -54,7 +58,7 @@ struct Fraction {
     ///
     /// The lower end of the valid range for the parameters is Int.min + 1, because you cannot flip Int.min to to its positive counterpart –it results in an overflow–
     /// which may happen in the `reduce()` function.
-    init?(numerator: Int, denominator: Int) {
+    public init?(numerator: Int, denominator: Int) {
         guard denominator != 0 else { return nil }
         guard numerator > Int.min, denominator > Int.min else { return nil }
 
@@ -63,7 +67,7 @@ struct Fraction {
     }
 
     /// Reduce a fraction to its Greatest Common Denominator
-    mutating func reduce() {
+    public mutating func reduce() {
         let (absNumerator, numeratorSign) = numerator < 0 ? (-numerator, -1) : (numerator, 1)
         let (absDenominator, denominatorSign) = denominator < 0 ? (-denominator, -1) : (denominator, 1)
 
@@ -80,21 +84,40 @@ struct Fraction {
     }
 
     /// Returns a new fraction representing the reduction of the receiver to its Greatest Common Denominator
-    func reduced() -> Fraction {
+    public func reduced() -> Fraction {
         var copy = self
         copy.reduce()
         return copy
     }
 
+    /// Fractions with two negative signs are normalized to two positive signs.
+    /// Fractions with negative denominator are normalized to positive denominator and negative numerator.
+    public mutating func normalize() {
+        if numerator >= 0 && denominator >= 0 { return }
+        if (numerator < 0 && denominator < 0) || (denominator < 0) {
+            numerator *= -1
+            denominator *= -1
+        }
+    }
+
+    /// Returns a normalized copy of `self`.
+    /// Fractions with two negative signs are normalized to two positive signs.
+    /// Fractions with negative denominator are normalized to positive denominator and negative numerator.
+    public func normalized() -> Fraction {
+        var copy = self
+        copy.normalize()
+        return copy
+    }
+
     /// Converts the represented fraction to a Double value.
     /// - Warning: The resulting floating point value may not represent the fraction with absolute accuracy.
-    var doubleValue: Double {
+    public var doubleValue: Double {
         Double(numerator) / Double(denominator)
     }
 
     /// Converts the represented fraction to a Float value.
     /// - Warning: The resulting floating point value may not represent the fraction with absolute accuracy.
-    var floatValue: Float {
+    public var floatValue: Float {
         Float(doubleValue)
     }
 
@@ -102,7 +125,7 @@ struct Fraction {
     /// - Parameters:
     ///   - other: The Fraction to add.
     ///   - reducing: A flag indicating whether to reduce the result of the addition to its GCD. Defaults to `true`.
-    mutating func add(_ other: Fraction, reducing: Bool = true) {
+    public mutating func add(_ other: Fraction, reducing: Bool = true) {
         self.normalize()
         let normalizedOther = other.normalized()
 
@@ -117,21 +140,45 @@ struct Fraction {
         }
     }
 
+    /// Add an integer to self.
+    /// - Parameters:
+    ///   - integer: The integer to add.
+    ///   - reducing: A flag indicating whether to reduce the result of the addition to its GCD. Defaults to `true`.
+    public mutating func add(_ integer: Int, reducing: Bool = true) {
+        self.normalize()
+
+        numerator += integer * denominator
+
+        if ( reducing ) {
+            self.reduce()
+        }
+    }
+
     /// Add another Fraction to a copy of `self` and return the result.
     /// - Parameters:
     ///   - other: The Fraction to add.
     ///   - reducing: A flag indicating whether to reduce the result of the addition to its GCD. Defaults to `true`.
-    func adding(_ other: Fraction, reducing: Bool = true) -> Fraction {
+    public func adding(_ other: Fraction, reducing: Bool = true) -> Fraction {
         var copy = self
         copy.add(other, reducing: reducing)
+        return copy
+    }
+
+    /// Add an integer to a copy of `self` and return the result.
+    /// - Parameters:
+    ///   - integer: The integer to add.
+    ///   - reducing: A flag indicating whether to reduce the result of the addition to its GCD. Defaults to `true`.
+    public func adding(_ integer: Int, reducing: Bool = true) -> Fraction {
+        var copy = self
+        copy.add(integer, reducing: reducing)
         return copy
     }
 
     /// Subtract another Fraction from self.
     /// - Parameters:
     ///   - other: The Fraction to subtract.
-    ///   - reducing: A flag indicating whether to reduce the result of the addition to its GCD. Defaults to `true`.
-    mutating func subtract(_ other: Fraction, reducing: Bool = true) {
+    ///   - reducing: A flag indicating whether to reduce the result of the subtraction to its GCD. Defaults to `true`.
+    public mutating func subtract(_ other: Fraction, reducing: Bool = true) {
         if (denominator == other.denominator) {
             numerator -= other.numerator
         } else {
@@ -144,23 +191,56 @@ struct Fraction {
         }
     }
 
+    /// Subtract an integer from self.
+    /// - Parameters:
+    ///   - integer: The integer to subtract.
+    ///   - reducing: A flag indicating whether to reduce the result of the subtraction to its GCD. Defaults to `true`.
+    public mutating func subtract(_ integer: Int, reducing: Bool = true) {
+            numerator -= integer * denominator
+
+        if ( reducing ) {
+            self.reduce()
+        }
+    }
+
     /// Subtract another Fraction from a copy of `self` and return the result.
     /// - Parameters:
     ///   - other: The Fraction to subtract.
-    ///   - reducing: A flag indicating whether to reduce the result of the addition to its GCD. Defaults to `true`.
-    func subtracting(_ other: Fraction, reducing: Bool = true) -> Fraction {
+    ///   - reducing: A flag indicating whether to reduce the result of the subtraction to its GCD. Defaults to `true`.
+    public func subtracting(_ other: Fraction, reducing: Bool = true) -> Fraction {
         var copy = self
         copy.subtract(other, reducing: reducing)
+        return copy
+    }
+
+    /// Subtract an integer from a copy of `self` and return the result.
+    /// - Parameters:
+    ///   - integer: The integer to subtract.
+    ///   - reducing: A flag indicating whether to reduce the result of the subtraction to its GCD. Defaults to `true`.
+    public func subtracting(_ integer: Int, reducing: Bool = true) -> Fraction {
+        var copy = self
+        copy.subtract(integer, reducing: reducing)
         return copy
     }
 
     /// Multiply self by another Fraction.
     /// - Parameters:
     ///   - other: The Fraction to multiply by.
-    ///   - reducing: A flag indicating whether to reduce the result of the addition to its GCD. Defaults to `true`.
-    mutating func multiply(by other: Fraction, reducing: Bool = true) {
+    ///   - reducing: A flag indicating whether to reduce the result of the multiplication to its GCD. Defaults to `true`.
+    public mutating func multiply(by other: Fraction, reducing: Bool = true) {
         numerator = numerator * other.numerator
         denominator = denominator * other.denominator
+        if ( reducing ) {
+            self.reduce()
+        }
+    }
+
+    /// Multiply self by an integer.
+    /// - Parameters:
+    ///   - integer: The integer to multiply by.
+    ///   - reducing: A flag indicating whether to reduce the result of the multiplication to its GCD. Defaults to `true`.
+    public mutating func multiply(by integer: Int, reducing: Bool = true) {
+        numerator = numerator * integer
         if ( reducing ) {
             self.reduce()
         }
@@ -169,18 +249,45 @@ struct Fraction {
     /// Multiply a copy of `self` by another Fraction and return the result.
     /// - Parameters:
     ///   - other: The Fraction to multiply by.
-    ///   - reducing: A flag indicating whether to reduce the result of the addition to its GCD. Defaults to `true`.
-    func multiplying(by other: Fraction, reducing: Bool = true) -> Fraction {
+    ///   - reducing: A flag indicating whether to reduce the result of the multiplication to its GCD. Defaults to `true`.
+    public func multiplying(by other: Fraction, reducing: Bool = true) -> Fraction {
         var copy = self
         copy.multiply(by: other, reducing:  reducing)
+        return copy
+    }
+
+    /// Multiply a copy of `self` by an integer and return the result.
+    /// - Parameters:
+    ///   - integer: The integer to multiply by.
+    ///   - reducing: A flag indicating whether to reduce the result of the multiplication to its GCD. Defaults to `true`.
+    public func multiplying(by integer: Int, reducing: Bool = true) -> Fraction {
+        var copy = self
+        copy.multiply(by: integer, reducing:  reducing)
         return copy
     }
 
     /// Divide self by another Fraction.
     /// - Parameters:
     ///   - other: The Fraction to divide by.
-    ///   - reducing: A flag indicating whether to reduce the result of the addition to its GCD. Defaults to `true`.
-    mutating func divide(by other: Fraction, reducing: Bool = true) {
+    ///   - reducing: A flag indicating whether to reduce the result of the division to its GCD. Defaults to `true`.
+    public mutating func divide(by other: Fraction, reducing: Bool = true) throws {
+        guard other.numerator != 0 else { throw FractionError.illegalDivision }
+
+        numerator = numerator * other.denominator
+        denominator = denominator * other.numerator
+        if ( reducing ) {
+            self.reduce()
+        }
+    }
+
+    /// Divide self by an integer.
+    /// - Parameters:
+    ///   - integer: The integer to divide by.
+    ///   - reducing: A flag indicating whether to reduce the result of the division to its GCD. Defaults to `true`.
+    public mutating func divide(by integer: Int, reducing: Bool = true) throws {
+        guard integer != 0 else { throw FractionError.illegalDivision }
+
+        let other = Fraction(numerator: integer, denominator: 1)!
         numerator = numerator * other.denominator
         denominator = denominator * other.numerator
         if ( reducing ) {
@@ -191,15 +298,27 @@ struct Fraction {
     /// Divide a copy of `self` by another Fraction and return the result.
     /// - Parameters:
     ///   - other: The Fraction to divide by.
-    ///   - reducing: A flag indicating whether to reduce the result of the addition to its GCD. Defaults to `true`.
-    func dividing(by other: Fraction, reducing: Bool = true) -> Fraction {
+    ///   - reducing: A flag indicating whether to reduce the result of the division to its GCD. Defaults to `true`.
+    public func dividing(by other: Fraction, reducing: Bool = true) throws -> Fraction {
         var copy = self
-        copy.divide(by: other, reducing: reducing)
+        try copy.divide(by: other, reducing: reducing)
+        return copy
+    }
+
+    /// Divide a copy of `self` by an integer and return the result.
+    /// - Parameters:
+    ///   - integer: The integer to divide by.
+    ///   - reducing: A flag indicating whether to reduce the result of the division to its GCD. Defaults to `true`.
+    public func dividing(by integer: Int, reducing: Bool = true) throws -> Fraction {
+        guard integer != 0 else { throw FractionError.illegalDivision }
+
+        var copy = self
+        try copy.divide(by: integer, reducing: reducing)
         return copy
     }
 
     /// Flip `nominator` and `denominator` to their positive counterpart if negative.
-    mutating func abs() {
+    public mutating func abs() {
         if numerator < 0 {
             numerator *= -1
         }
@@ -209,50 +328,81 @@ struct Fraction {
     }
 }
 
-func + (lhs: Fraction, rhs: Fraction) -> Fraction {
-    lhs.adding(rhs)
-}
+extension Fraction {
+    public static func + (lhs: Fraction, rhs: Fraction) -> Fraction {
+        lhs.adding(rhs)
+    }
 
-func - (lhs: Fraction, rhs: Fraction) -> Fraction {
-    lhs.subtracting(rhs)
-}
+    public static func + (lhs: Int, rhs: Fraction) -> Fraction {
+        rhs.adding(lhs)
+    }
 
-func * (lhs: Fraction, rhs: Fraction) -> Fraction {
-    lhs.multiplying(by: rhs)
-}
+    public static func + (lhs: Fraction, rhs: Int) -> Fraction {
+        lhs.adding(rhs)
+    }
 
-func / (lhs: Fraction, rhs: Fraction) -> Fraction {
-    lhs.dividing(by: rhs)
+    public static func += (left: inout Fraction, right: Fraction) {
+        left = left + right
+    }
+
+    public static func - (lhs: Fraction, rhs: Fraction) -> Fraction {
+        lhs.subtracting(rhs)
+    }
+
+    public static func - (lhs: Int, rhs: Fraction) -> Fraction {
+        Fraction(numerator: lhs, denominator: 1)!.subtracting(rhs)
+    }
+
+    public static func - (lhs: Fraction, rhs: Int) -> Fraction {
+        lhs.subtracting(rhs)
+    }
+
+    public static func -= (left: inout Fraction, right: Fraction) {
+        left = left - right
+    }
+
+    public static func * (lhs: Fraction, rhs: Fraction) -> Fraction {
+        lhs.multiplying(by: rhs)
+    }
+
+    public static func * (lhs: Int, rhs: Fraction) -> Fraction {
+        rhs.multiplying(by: lhs)
+    }
+
+    public static func * (lhs: Fraction, rhs: Int) -> Fraction {
+        lhs.multiplying(by: rhs)
+    }
+
+    public static func *= (left: inout Fraction, right: Fraction) {
+        left = left * right
+    }
+
+    public static func / (lhs: Fraction, rhs: Fraction) throws -> Fraction {
+        try lhs.dividing(by: rhs)
+    }
+
+    public static func / (lhs: Int, rhs: Fraction) throws -> Fraction {
+        try Fraction(numerator: lhs, denominator: 1)!.dividing(by: rhs)
+    }
+
+    public static func / (lhs: Fraction, rhs: Int) throws -> Fraction {
+        try lhs.dividing(by: rhs)
+    }
+
+    public static func /= (left: inout Fraction, right: Fraction) throws {
+        left = try left / right
+    }
 }
 
 extension Fraction: Comparable {
-    /// Fractions with two negative signs are normalized to two positive signs.
-    /// Fractions with negative denominator are normalized to positive denominator and negative numerator.
-    mutating func normalize() {
-        if numerator >= 0 && denominator >= 0 { return }
-        if (numerator < 0 && denominator < 0) || (denominator < 0) {
-            numerator *= -1
-            denominator *= -1
-        }
-    }
-
-    /// Returns a normalized copy of `self`.
-    /// Fractions with two negative signs are normalized to two positive signs.
-    /// Fractions with negative denominator are normalized to positive denominator and negative numerator.
-    func normalized() -> Fraction {
-        var copy = self
-        copy.normalize()
-        return copy
-    }
-
-    static func == (lhs: Fraction, rhs: Fraction) -> Bool {
+    public static func == (lhs: Fraction, rhs: Fraction) -> Bool {
         let lhsRed = lhs.reduced().normalized()
         let rhsRed = rhs.reduced().normalized()
 
         return lhsRed.numerator == rhsRed.numerator && lhsRed.denominator == rhsRed.denominator
     }
 
-    static func < (lhs: Fraction, rhs: Fraction) -> Bool {
+    public static func < (lhs: Fraction, rhs: Fraction) -> Bool {
         let lhsRed = lhs.reduced().normalized()
         let rhsRed = rhs.reduced().normalized()
 
@@ -264,7 +414,18 @@ extension Fraction: Comparable {
 }
 
 extension Fraction {
-    var description: String {
+    public var description: String {
         "\(numerator)/\(denominator)"
+    }
+}
+
+// MARK: - Helpers -
+extension Fraction {
+    public static var zero: Fraction {
+        Fraction(numerator: 0, denominator: 1)!
+    }
+
+    public static var one: Fraction {
+        Fraction(numerator: 1, denominator: 1)!
     }
 }

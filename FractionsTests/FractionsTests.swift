@@ -308,6 +308,14 @@ class FractionsTests: XCTestCase {
         let f3_5 = Fraction(numerator: 3, denominator: 5)!
         f1_4bis.add(f3_5)
         XCTAssertTrue(f1_4bis.numerator == 17 && f1_4bis.denominator == 20, "Incorrect result adding \(fm3_4.description) to 1/4. Expected 17/20, got \(f1_4bis.description)")
+
+        var f1_4third = Fraction(numerator: 1, denominator: 4)!
+        f1_4third.add(1)
+        XCTAssertTrue(f1_4third.numerator == 5 && f1_4third.denominator == 4, "Incorrect result adding 1 to 1/4. Expected 5/4, got \(f1_4third.description)")
+
+        var f3_4bis = Fraction(numerator: 3, denominator: 4)!
+        f3_4bis.add(3)
+        XCTAssertTrue(f3_4bis.numerator == 15 && f3_4bis.denominator == 4, "Incorrect result adding 3 to 3/4. Expected 15/4, got \(f3_4bis.description)")
     }
 
     func testAdditionMutatingWithNegativeSigns() {
@@ -337,6 +345,15 @@ class FractionsTests: XCTestCase {
         let f2_4 = Fraction(numerator: 2, denominator: 4)!
         let result = f1_4.adding(f2_4)
         XCTAssertTrue(result.numerator == 3 && result.denominator == 4, "Incorrect result adding \(f2_4.description) to 1/4. Expected 3/4, got \(result.description)")
+
+
+        let result1 = f1_4.adding(1)
+        XCTAssertTrue(result1.numerator == 5 && result1.denominator == 4, "Incorrect result adding 1 to 1/4. Expected 5/4, got \(result1.description)")
+
+        let f3_4 = Fraction(numerator: 3, denominator: 4)!
+        let result2 = f3_4.adding(3)
+        XCTAssertTrue(result2.numerator == 15 && result2.denominator == 4, "Incorrect result adding 3 to 3/4. Expected 15/4, got \(result2.description)")
+
     }
 
     func testAdditionNonMutatingNonReducing() {
@@ -371,6 +388,21 @@ class FractionsTests: XCTestCase {
         let f2_4 = Fraction(numerator: 2, denominator: 4)!
         let result = f1_4 + f2_4
         XCTAssertTrue(result.numerator == 3 && result.denominator == 4, "Incorrect result for 1/4 + 2/4. Expected 3/4, got \(result.description)")
+
+        let result2 = 1 + f1_4
+        XCTAssertTrue(result2.numerator == 5 && result2.denominator == 4, "Incorrect result for 1 + 1/4. Expected 5/4, got \(result2.description)")
+
+        let result3 = f1_4 + 1
+        XCTAssertTrue(result3.numerator == 5 && result3.denominator == 4, "Incorrect result for 1/4 + 1. Expected 5/4, got \(result3.description)")
+    }
+
+    func testAdditionCompundAssignmentOperator() {
+        var f1_4 = Fraction(numerator: 1, denominator: 4)!
+        let f3_4 = Fraction(numerator: 3, denominator: 4)!
+
+        f1_4 += f3_4
+        XCTAssertTrue(f1_4.numerator == 1 && f1_4.denominator == 1, "Incorrect result adding \(f3_4.description) to 1/4. Expected 1/1, got \(f1_4.description)")
+
     }
 
     // MARK: - Subtraction
@@ -383,12 +415,20 @@ class FractionsTests: XCTestCase {
 
         var fm3_4 = Fraction(numerator: -3, denominator: 4)!
         fm3_4.add(f2_4)
-        XCTAssertTrue(fm3_4.numerator == -1 && fm3_4.denominator == 4, "Incorrect result adding \(f2_4.description) to \(fm3_4.description). Expected -1/4, got \(fm3_4.description)")
+        XCTAssertTrue(fm3_4.numerator == -1 && fm3_4.denominator == 4, "Incorrect result subtracting \(f2_4.description) from \(fm3_4.description). Expected -1/4, got \(fm3_4.description)")
 
         var f1_4bis = Fraction(numerator: 1, denominator: 4)!
         let f3_5 = Fraction(numerator: 3, denominator: 5)!
         f1_4bis.add(f3_5)
-        XCTAssertTrue(f1_4bis.numerator == 17 && f1_4bis.denominator == 20, "Incorrect result adding \(fm3_4.description) to 1/4. Expected 17/20, got \(f1_4bis.description)")
+        XCTAssertTrue(f1_4bis.numerator == 17 && f1_4bis.denominator == 20, "Incorrect result subtracting \(fm3_4.description) from 1/4. Expected 17/20, got \(f1_4bis.description)")
+
+        var f1_4third = Fraction(numerator: 1, denominator: 4)!
+        f1_4third.subtract(1)
+        XCTAssertTrue(f1_4third.numerator == -3 && f1_4third.denominator == 4, "Incorrect result subtracting 1 from 1/4. Expected -3/4, got \(f1_4third.description)")
+
+        var f3_4bis = Fraction(numerator: 3, denominator: 4)!
+        f3_4bis.subtract(3)
+        XCTAssertTrue(f3_4bis.numerator == -9 && f3_4bis.denominator == 4, "Incorrect result subtracting 3 from 3/4. Expected -9/4, got \(f3_4bis.description)")
     }
 
     func testSubtractionNonMutating() {
@@ -396,6 +436,14 @@ class FractionsTests: XCTestCase {
         let f2_4 = Fraction(numerator: 2, denominator: 4)!
         let result = f1_4.subtracting(f2_4)
         XCTAssertTrue(result.numerator == -1 && result.denominator == 4, "Incorrect result subtracting \(f2_4.description) from 1/4. Expected -1/4, got \(result.description)")
+
+        let f1_4third = Fraction(numerator: 1, denominator: 4)!
+        let result2 = f1_4third.subtracting(1)
+        XCTAssertTrue(result2.numerator == -3 && result2.denominator == 4, "Incorrect result subtracting 1 from 1/4. Expected -3/4, got \(result2.description)")
+
+        let f3_4bis = Fraction(numerator: 3, denominator: 4)!
+        let result3 = f3_4bis.subtracting(3)
+        XCTAssertTrue(result3.numerator == -9 && result3.denominator == 4, "Incorrect result subtracting 3 from 3/4. Expected -9/4, got \(result3.description)")
     }
 
     func testSubtractionNonMutatingNonReducing() {
@@ -410,6 +458,21 @@ class FractionsTests: XCTestCase {
         let f2_4 = Fraction(numerator: 2, denominator: 4)!
         let result = f1_4 - f2_4
         XCTAssertTrue(result.numerator == -1 && result.denominator == 4, "Incorrect result for 1/4 - 2/4. Expected -1/4, got \(result.description)")
+
+        let result2 = 1 - f2_4
+        XCTAssertTrue(result2.numerator == 1 && result2.denominator == 2, "Incorrect result for 1 - 2/4. Expected 1/2, got \(result2.description)")
+
+        let result3 = f2_4 - 1
+        XCTAssertTrue(result3.numerator == -1 && result3.denominator == 2, "Incorrect result for 2/4 - 1. Expected 1/2, got \(result3.description)")
+    }
+
+    func testSubtractionCompundAssignmentOperator() {
+        var f1_4 = Fraction(numerator: 1, denominator: 4)!
+        let f3_4 = Fraction(numerator: 3, denominator: 4)!
+
+        f1_4 -= f3_4
+        XCTAssertTrue(f1_4.numerator == -1 && f1_4.denominator == 2, "Incorrect result subtracting \(f3_4.description) from 1/4. Expected -1/2, got \(f1_4.description)")
+
     }
 
     // MARK: - Multiplication
@@ -426,7 +489,16 @@ class FractionsTests: XCTestCase {
 
         var f1_m4 = Fraction(numerator: 1, denominator: -4)!
         f1_m4.multiply(by: f2_4)
-        XCTAssertTrue(f1_m4.numerator == 1 && f1_m4.denominator == -8, "Incorrect result multiplying -1/4 by \(f2_4.description). Expected 1/-8, got \(f1_m4.description)")
+        XCTAssertTrue(f1_m4.numerator == 1 && f1_m4.denominator == -8, "Incorrect result multiplying 1/-4 by \(f2_4.description). Expected 1/-8, got \(f1_m4.description)")
+
+
+        var f1_4bis = Fraction(numerator: 1, denominator: 4)!
+        f1_4bis.multiply(by: 2)
+        XCTAssertTrue(f1_4bis.numerator == 1 && f1_4bis.denominator == 2, "Incorrect result multiplying 1/4 by 2. Expected 1/2, got \(f1_4bis.description)")
+
+        var f3_4 = Fraction(numerator: 3, denominator: 4)!
+        f3_4.multiply(by: 3)
+        XCTAssertTrue(f3_4.numerator == 9 && f3_4.denominator == 4, "Incorrect result multiplying 3/4 by 3. Expected 9/4, got \(f3_4.description)")
     }
 
     func testMultiplicationNonMutating() {
@@ -434,6 +506,14 @@ class FractionsTests: XCTestCase {
         let f2_4 = Fraction(numerator: 2, denominator: 4)!
         let result = f1_4.multiplying(by: f2_4)
         XCTAssertTrue(result.numerator == 1 && result.denominator == 8, "Incorrect result multiplying \(f1_4.description) by \(f2_4.description). Expected 1/8, got \(result.description)")
+
+        let f1_4bis = Fraction(numerator: 1, denominator: 4)!
+        let result2 = f1_4bis.multiplying(by: 2)
+        XCTAssertTrue(result2.numerator == 1 && result2.denominator == 2, "Incorrect result multiplying 2 by 1/4. Expected 1/2, got \(result2.description)")
+
+        let f3_4 = Fraction(numerator: 3, denominator: 4)!
+        let result3 = f3_4.multiplying(by: 3)
+        XCTAssertTrue(result3.numerator == 9 && result3.denominator == 4, "Incorrect result multiplying 3 by 3/4. Expected 9/4, got \(result3.description)")
     }
 
     func testMultiplicationMutatingNonReducing() {
@@ -448,6 +528,21 @@ class FractionsTests: XCTestCase {
         let f2_4 = Fraction(numerator: 2, denominator: 4)!
         let result = f1_4 * f2_4
         XCTAssertTrue(result.numerator == 1 && result.denominator == 8, "Incorrect result multiplying \(f1_4.description) by \(f2_4.description). Expected 1/8, got \(result.description)")
+
+        let result2 = 2 * f2_4
+        XCTAssertTrue(result2.numerator == 1 && result2.denominator == 1, "Incorrect result multiplying 2 by \(f2_4.description). Expected 1/1, got \(result2.description)")
+
+        let result3 = f2_4 * 2
+        XCTAssertTrue(result3.numerator == 1 && result3.denominator == 1, "Incorrect result multiplying \(result3.description) by 2. Expected 1/1, got \(result3.description)")
+    }
+
+    func testMultiplicationCompundAssignmentOperator() {
+        var f1_4 = Fraction(numerator: 1, denominator: 4)!
+        let f3_4 = Fraction(numerator: 3, denominator: 4)!
+
+        f1_4 *= f3_4
+        XCTAssertTrue(f1_4.numerator == 3 && f1_4.denominator == 16, "Incorrect result multiplying 1/4 by \(f3_4.description). Expected 3/16, got \(f1_4.description)")
+
     }
 
     // MARK: - Division
@@ -455,29 +550,111 @@ class FractionsTests: XCTestCase {
     func testDivisionMutating() {
         var f1_4 = Fraction(numerator: 1, denominator: 4)!
         let f3_4 = Fraction(numerator: 3, denominator: 4)!
-        f1_4.divide(by: f3_4)
+        XCTAssertNoThrow(try f1_4.divide(by: f3_4))
+        XCTAssertThrowsError(try f1_4.divide(by: 0))
         XCTAssertTrue(f1_4.numerator == 1 && f1_4.denominator == 3, "Incorrect result dividing 1/4 by \(f3_4.description). Expected 1/3, got \(f1_4.description)")
-    }
+
+        var f1_4bis = Fraction(numerator: 1, denominator: 4)!
+        try! f1_4bis.divide(by: 2)
+        XCTAssertTrue(f1_4bis.numerator == 1 && f1_4bis.denominator == 8, "Incorrect result dividing 1/4 by 2. Expected 1/8, got \(f1_4bis.description)")
+
+        var f3_4bis = Fraction(numerator: 3, denominator: 4)!
+        try! f3_4bis.divide(by: 3)
+        XCTAssertTrue(f3_4bis.numerator == 1 && f3_4bis.denominator == 4, "Incorrect result dividing 3 by 3/4. Expected 1/4, got \(f3_4bis.description)")
+}
 
     func testDivisionNonMutating() {
         let f1_4 = Fraction(numerator: 1, denominator: 4)!
         let f3_4 = Fraction(numerator: 3, denominator: 4)!
-        let result = f1_4.dividing(by: f3_4)
+        XCTAssertNoThrow(try f1_4.dividing(by: f3_4))
+        let result = try! f1_4.dividing(by: f3_4)
         XCTAssertTrue(result.numerator == 1 && result.denominator == 3, "Incorrect result dividing \(f1_4.description) by \(f3_4.description). Expected 1/3, got \(result.description)")
+
+        let f0_4 = Fraction(numerator: 0, denominator: 4)!
+        XCTAssertNoThrow(try f0_4.dividing(by: f3_4))
+        XCTAssertThrowsError(try f3_4.dividing(by: f0_4))
+        XCTAssertThrowsError(try f3_4.dividing(by: 0))
+
+        let f1_4bis = Fraction(numerator: 1, denominator: 4)!
+        let result2 = try! f1_4bis.dividing(by: 2)
+        XCTAssertTrue(result2.numerator == 1 && result2.denominator == 8, "Incorrect result dividing 2 by 1/4. Expected 1/8, got \(result2.description)")
+
+        let f3_4bis = Fraction(numerator: 3, denominator: 4)!
+        let result3 = try! f3_4bis.dividing(by: 3)
+        XCTAssertTrue(result3.numerator == 1 && result3.denominator == 4, "Incorrect result dividing 3 by 3/4. Expected 1/4, got \(result3.description)")
     }
 
     func testDivisionNonMutatingNonReducing() {
         let f1_4 = Fraction(numerator: 1, denominator: 4)!
         let f3_4 = Fraction(numerator: 3, denominator: 4)!
-        let result = f1_4.dividing(by: f3_4, reducing: false)
+        XCTAssertNoThrow(try f1_4.dividing(by: f3_4, reducing: false))
+        let result = try! f1_4.dividing(by: f3_4, reducing: false)
         XCTAssertTrue(result.numerator == 4 && result.denominator == 12, "Incorrect result dividing \(f1_4.description) by \(f3_4.description). Expected 4/12, got \(result.description)")
     }
 
     func testDivisionOperator() {
         let f1_4 = Fraction(numerator: 1, denominator: 4)!
         let f3_4 = Fraction(numerator: 3, denominator: 4)!
-        let result = f1_4 / f3_4
+        XCTAssertNoThrow(try f1_4 / f3_4)
+        let result = try! f1_4 / f3_4
         XCTAssertTrue(result.numerator == 1 && result.denominator == 3, "Incorrect result dividing \(f1_4.description) by \(f3_4.description). Expected 1/3, got \(result.description)")
+
+        let f0_4 = Fraction(numerator: 0, denominator: 4)!
+        XCTAssertNoThrow(try f0_4 / f3_4)
+        XCTAssertThrowsError(try f3_4 / f0_4)
+
+        let result2 = try! 2 / f3_4
+        XCTAssertTrue(result2.numerator == 8 && result2.denominator == 3, "Incorrect result dividing 2 by \(f3_4.description). Expected 8/3, got \(result2.description)")
+
+        let result3 = try! f3_4 / 2
+        XCTAssertTrue(result3.numerator == 3 && result3.denominator == 8, "Incorrect result dividing \(f3_4.description) by 2. Expected 3/8, got \(result3.description)")
+
+        XCTAssertNoThrow(try 0 / f3_4)
+        XCTAssertThrowsError(try f3_4 / 0)
     }
 
+    func testDivisionCompundAssignmentOperator() {
+        var f1_4 = Fraction(numerator: 1, denominator: 4)!
+        var f1_4NoThrow = f1_4
+        let f3_4 = Fraction(numerator: 3, denominator: 4)!
+
+        XCTAssertNoThrow(try f1_4NoThrow /= f3_4)
+
+        try! f1_4 /= f3_4
+        XCTAssertTrue(f1_4.numerator == 1 && f1_4.denominator == 3, "Incorrect result dividing 1/4 by \(f3_4.description). Expected 1/3, got \(f1_4.description)")
+
+    }
+
+    func testStaticZero() {
+        let zero = Fraction.zero
+        XCTAssertTrue(zero.numerator == 0 && zero.denominator == 1)
+    }
+
+    func testStaticOne() {
+        let one = Fraction.one
+        XCTAssertTrue(one.numerator == 1 && one.denominator == 1)
+    }
+}
+
+// And a bonus practical test:
+// In western music notation adding a dot after a note/rest augments it by half its value. Each additional dot half again the previously halved value.
+extension FractionsTests {
+    public func dotFactorF(_ dotFactor: Int) -> Fraction? {
+        if dotFactor == 0 { return nil }
+        let dotFactorSquared = 2 << (dotFactor - 1)
+        let q = Fraction(numerator: 1, denominator: dotFactorSquared)!
+        return 1 + q * (dotFactorSquared - 1)
+    }
+
+    public func dotFactor(_ dotFactor: Int) -> Double {
+        if dotFactor == 0 { return 0 }
+        let dotFactorSquared = pow(2.0, Double(dotFactor))
+        return 1 + (1 / dotFactorSquared) * (dotFactorSquared - 1)
+    }
+
+    func testDotFactor() {
+        for dots in 1 ... 8 { print(dotFactor(dots))
+            XCTAssertEqual(dotFactorF(dots)!.doubleValue, dotFactor(dots))
+        }
+    }
 }
