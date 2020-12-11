@@ -6,7 +6,7 @@ The Fraction type supports **addition**, **subtraction**, **multiplication** and
     Per example, you can add two fractions in any of the following ways:
 
         var f1 = Fraction(numerator: 1, denominator: 2)
-        let f2= Fraction(numerator: 3, denominator: 4)
+        let f2 = Fraction(numerator: 3, denominator: 4)
 
         f1.add(f2) // mutating, f1 now holds the result of the addition
         let result1 = f1.adding(f2) // non-mutating
