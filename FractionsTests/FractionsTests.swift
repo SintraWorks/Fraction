@@ -39,6 +39,9 @@ class FractionsTests: XCTestCase {
         let illegalFraction2 = Fraction(numerator: Int.min, denominator: 1)
         XCTAssertNil(illegalFraction2, "numerator Int.min is illegal; the initializer should return nil")
 
+        let illegalFraction2bis = Fraction(Int.min)
+        XCTAssertNil(illegalFraction2bis, "numerator Int.min is illegal; the initializer should return nil")
+
         let illegalFraction3 = Fraction(numerator: 0, denominator: Int.min)
         XCTAssertNil(illegalFraction3, "denominator Int.min is illegal; the initializer should return nil")
 
@@ -72,6 +75,18 @@ class FractionsTests: XCTestCase {
         let f2 = Fraction(numerator: -1, denominator: 1)!
         XCTAssertTrue(f2.numerator == -1, "Numerator incorrectly assigned (expected -1 got \(f1.numerator)")
         XCTAssertTrue(f2.denominator == 1, "Denominator incorrectly assigned (expected 1 got \(f1.denominator)")
+
+        let almostIntMin = Fraction(numerator: Int.min + 1, denominator: 1)
+        XCTAssertNotNil(almostIntMin, "numerator Int.min + 1 is legal; the initializer should succeed")
+
+        let intMax = Fraction(numerator: Int.max, denominator: 1)
+        XCTAssertNotNil(intMax, "numerator Int.max is legal; the initializer should succeed")
+
+        let intMaxBis = Fraction(Int.max)
+        XCTAssertNotNil(intMaxBis, "numerator Int.max is legal; the initializer should succeed")
+
+        let intMaxVerified = Fraction(verifiedNumerator: Int.max)
+        XCTAssertNotNil(intMaxVerified, "numerator Int.max is legal; the initializer should succeed")
     }
 
     // MARK: - Utilities
@@ -389,11 +404,23 @@ class FractionsTests: XCTestCase {
         let result = f1_4 + f2_4
         XCTAssertTrue(result.numerator == 3 && result.denominator == 4, "Incorrect result for 1/4 + 2/4. Expected 3/4, got \(result.description)")
 
+        // Int literals will be automatically converted to a Fraction
         let result2 = 1 + f1_4
         XCTAssertTrue(result2.numerator == 5 && result2.denominator == 4, "Incorrect result for 1 + 1/4. Expected 5/4, got \(result2.description)")
 
         let result3 = f1_4 + 1
         XCTAssertTrue(result3.numerator == 5 && result3.denominator == 4, "Incorrect result for 1/4 + 1. Expected 5/4, got \(result3.description)")
+
+        let result3bis = 1 + f1_4
+        XCTAssertTrue(result3bis.numerator == 5 && result3bis.denominator == 4, "Incorrect result for 1/4 + 1. Expected 5/4, got \(result3bis.description)")
+
+        // By not using a literal, we ensure the mixed Int/Fraction operator is used.
+        let result4 = Int(1) + f1_4
+        XCTAssertTrue(result4.numerator == 5 && result4.denominator == 4, "Incorrect result for 1 + 1/4. Expected 5/4, got \(result4.description)")
+
+        // By not using a literal, we ensure the mixed Fraction/Inr operator is used.
+        let result5 = f1_4 + Int(1)
+        XCTAssertTrue(result5.numerator == 5 && result5.denominator == 4, "Incorrect result for 1/4 + 1. Expected 5/4, got \(result5.description)")
     }
 
     func testAdditionCompundAssignmentOperator() {
@@ -464,6 +491,15 @@ class FractionsTests: XCTestCase {
 
         let result3 = f2_4 - 1
         XCTAssertTrue(result3.numerator == -1 && result3.denominator == 2, "Incorrect result for 2/4 - 1. Expected 1/2, got \(result3.description)")
+
+        let result3bis = 1 - f2_4
+        XCTAssertTrue(result3bis.numerator == 1 && result3bis.denominator == 2, "Incorrect result for 1/4 + 1. Expected 5/4, got \(result3bis.description)")
+
+        let result4 = Int(1) - f2_4
+        XCTAssertTrue(result4.numerator == 1 && result4.denominator == 2, "Incorrect result for 1 - 2/4. Expected 1/2, got \(result4.description)")
+
+        let result5 = f2_4 - Int(1)
+        XCTAssertTrue(result5.numerator == -1 && result5.denominator == 2, "Incorrect result for 2/4 - 1. Expected 1/2, got \(result5.description)")
     }
 
     func testSubtractionCompundAssignmentOperator() {
@@ -534,6 +570,12 @@ class FractionsTests: XCTestCase {
 
         let result3 = f2_4 * 2
         XCTAssertTrue(result3.numerator == 1 && result3.denominator == 1, "Incorrect result multiplying \(result3.description) by 2. Expected 1/1, got \(result3.description)")
+
+        let result4 = Int(2) * f2_4
+        XCTAssertTrue(result4.numerator == 1 && result4.denominator == 1, "Incorrect result multiplying 2 by \(f2_4.description). Expected 1/1, got \(result4.description)")
+
+        let result5 = f2_4 * Int(2)
+        XCTAssertTrue(result5.numerator == 1 && result5.denominator == 1, "Incorrect result multiplying \(f2_4.description) by 2. Expected 1/1, got \(result5.description)")
     }
 
     func testMultiplicationCompundAssignmentOperator() {
@@ -609,6 +651,12 @@ class FractionsTests: XCTestCase {
         let result3 = try! f3_4 / 2
         XCTAssertTrue(result3.numerator == 3 && result3.denominator == 8, "Incorrect result dividing \(f3_4.description) by 2. Expected 3/8, got \(result3.description)")
 
+        let result4 = try! Int(2) / f3_4
+        XCTAssertTrue(result4.numerator == 8 && result4.denominator == 3, "Incorrect result dividing 2 by \(f3_4.description). Expected 8/3, got \(result4.description)")
+
+        let result5 = try! f3_4 / Int(2)
+        XCTAssertTrue(result5.numerator == 3 && result5.denominator == 8, "Incorrect result dividing \(f3_4.description) by 2. Expected 3/8, got \(result5.description)")
+
         XCTAssertNoThrow(try 0 / f3_4)
         XCTAssertThrowsError(try f3_4 / 0)
     }
@@ -625,6 +673,8 @@ class FractionsTests: XCTestCase {
 
     }
 
+    //: MARK -
+
     func testStaticZero() {
         let zero = Fraction.zero
         XCTAssertTrue(zero.numerator == 0 && zero.denominator == 1)
@@ -633,6 +683,72 @@ class FractionsTests: XCTestCase {
     func testStaticOne() {
         let one = Fraction.one
         XCTAssertTrue(one.numerator == 1 && one.denominator == 1)
+    }
+
+    func testExpressibleByIntegerLiteral() {
+        let zero: Fraction = 0
+        XCTAssertTrue(zero.numerator == 0, "Literal 0 initialized fraction should have numerator 0, got \(zero.numerator)")
+        XCTAssertTrue(zero.denominator == 1, "Literal 0 initialized fraction should have denominator 1, got \(zero.denominator)")
+
+        let neg: Fraction = -100000
+        XCTAssertTrue(neg.numerator == -100000, "Literal 0 initialized fraction should have numerator -100000, got \(neg.numerator)")
+        XCTAssertTrue(neg.denominator == 1, "Literal 0 initialized fraction should have denominator 1, got \(neg.denominator)")
+
+        let pos: Fraction = 100000
+        XCTAssertTrue(pos.numerator == 100000, "Literal 0 initialized fraction should have numerator 100000, got \(pos.numerator)")
+        XCTAssertTrue(pos.denominator == 1, "Literal 0 initialized fraction should have denominator 1, got \(pos.denominator)")
+    }
+
+    func testExpressibleByFloatLiteral() {
+        let zero: Fraction = 0.0
+        XCTAssertTrue(zero.numerator == 0, "Literal 0.0 initialized fraction should have numerator 0, got \(zero.numerator)")
+        XCTAssertTrue(zero.denominator == 10000, "Literal 0.0 initialized fraction should have denominator 10000, got \(zero.denominator)")
+
+        let one: Fraction = 1.0
+        XCTAssertTrue(one.numerator == 10000, "Literal 0.0 initialized fraction should have numerator 10000, got \(one.numerator)")
+        XCTAssertTrue(one.denominator == 10000, "Literal 0.0 initialized fraction should have denominator 10000, got \(one.denominator)")
+
+        let oneThird: Fraction = 0.333333
+        XCTAssertTrue(oneThird.numerator == 3333, "Literal 0.0 initialized fraction should have numerator 3333, got \(oneThird.numerator)")
+        XCTAssertTrue(oneThird.denominator == 10000, "Literal 0.0 initialized fraction should have denominator 10000, got \(oneThird.denominator)")
+
+        let half: Fraction = 0.5
+        XCTAssertTrue(half.numerator == 5000, "Literal 0.0 initialized fraction should have numerator 5000, got \(half.numerator)")
+        XCTAssertTrue(half.denominator == 10000, "Literal 0.0 initialized fraction should have denominator 10000, got \(half.denominator)")
+
+        let decimalPlacesRoundingDown: Fraction = 0.1234321
+        XCTAssertTrue(decimalPlacesRoundingDown.numerator == 1234, "Literal 0.0 initialized fraction should have numerator 1234, got \(decimalPlacesRoundingDown.numerator)")
+        XCTAssertTrue(decimalPlacesRoundingDown.denominator == 10000, "Literal 0.0 initialized fraction should have denominator 10000, got \(decimalPlacesRoundingDown.denominator)")
+
+        let decimalPlacesRoundingUp: Fraction = 0.123456789
+        XCTAssertTrue(decimalPlacesRoundingUp.numerator == 1235, "Literal 0.0 initialized fraction should have numerator 1235, got \(decimalPlacesRoundingUp.numerator)")
+        XCTAssertTrue(decimalPlacesRoundingUp.denominator == 10000, "Literal 0.0 initialized fraction should have denominator 10000, got \(decimalPlacesRoundingUp.denominator)")
+
+        Fraction.significantFloatingPointDigits = 2
+        let zero2Digits: Fraction = 0.0
+        XCTAssertTrue(zero2Digits.numerator == 0, "Literal 0.0 initialized fraction should have numerator 0, got \(zero2Digits.numerator)")
+        XCTAssertTrue(zero2Digits.denominator == 100, "Literal 0.0 initialized fraction should have denominator 100, got \(zero2Digits.denominator)")
+    }
+
+    func testVerifiedInitializers() {
+        let zero1 = Fraction(verifiedNumerator: 0)
+        XCTAssertNotNil(zero1, "Fraction(verifiedNumerator: 0 is legal. Initializer should succeed")
+
+        let zero2 = Fraction(verifiedNumerator: 0, verifiedDenominator: 1)
+        XCTAssertNotNil(zero2, "Fraction(verifiedNumerator: 0, verifiedDenominator: 1) is legal. Initializer should succeed")
+
+        let max = Fraction(verifiedNumerator: 0, verifiedDenominator: 1, wholes: Int.max)
+        XCTAssertNotNil(max, "Fraction(verifiedNumerator: 0, verifiedDenominator: 1, wholes: Int.max) is legal. Initializer should succeed")
+        XCTAssertEqual(max.numerator, Int.max, "")
+        XCTAssertEqual(max.denominator, 1, "")
+
+        let maxPlusHalf = Fraction(verifiedNumerator: 1, verifiedDenominator: 2, wholes: 1000)
+        XCTAssertNotNil(maxPlusHalf, "Fraction(verifiedNumerator: 0, verifiedDenominator: 1, wholes: 1000) is legal. Initializer should succeed")
+        XCTAssertEqual(maxPlusHalf.numerator, 2001, "")
+        XCTAssertEqual(maxPlusHalf.denominator, 2, "")
+        XCTAssertEqual(maxPlusHalf.floatValue, 1000.5, "")
+
+        // Since the initalizers test for valid input through preconditions we can't test for invalid input here.
     }
 }
 

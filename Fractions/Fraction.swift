@@ -23,14 +23,27 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
+import Foundation
+
 /**
     Fraction is a value type that represents the quotient of two numbers (like `1/3`), without loss of precision, and with support for basic arithmetic operations.
+
+    The standard initializer is failable. This is because both passing in 0 (for the denominator) and passing in Int.min are illegal. But it can be inconvenient to have to either unwrap or force unwrap all the time when initializing many
+    fractions. Therefore the `Fraction` type also provides guaranteed initializers. These will produce non-optional Fractions, but if you pass in one of the two illegal values your code will crash.
+
+        // Optional initializer:
+        var f1_optional = Fraction(numerator: 1, denominator: 2)
+        // Non-Optional initializer:
+        var f2_nonOptional = Fraction(verifiedNumerator: 1, verifiedDenominator: 2)
+
+        var f3_nil = Fraction(numerator: 1, denominator: 0)
+        var f4_crash = Fraction(verifiedNumerator: 1, verifiedDenominator: 0)
 
     The Fraction type supports addition, subtraction, multiplication and division, both through dedicated functions, and through overloading the corresponding operators.
     E.g. you can add two fractions in any of the following ways:
 
-        var f1 = Fraction(numerator: 1, denominator: 2)
-        let f2= Fraction(numerator: 3, denominator: 4)
+        var f1 = Fraction(verifiedNumerator: 1, verifiedDenominator: 2)
+        let f2 = Fraction(verifiedNumerator: 3, verifiedDenominator: 4, wholes: 2) // 2 + 3/4
 
         f1.add(f2) // mutating, f1 now holds the result of the addition
         let result1 = f1.adding(f2) // non-mutating
@@ -40,9 +53,21 @@
 
         f1.add(f2, reducing: false)
 
+    Fraction conforms to ExpressibleByIntegerLiteral and to ExpressibleByFloatLiteral. This allows for convenient initalization, and for mixing and matching calculations with literal integers and floats, since
+    these will be implicitly converted to fractions. So you can write things like:
+
+        let wholeFraction: Fraction = 3
+        let wholeFraction2 = wholeFraction * 2
+
+        let fractionalFraction: Fraction = 3.9
+        let fractionalFraction2 = try? fractionalFraction / 3.3
+
     - Warning: Fraction will trap if any operation results in an overflow or underflow.
  */
 public struct Fraction {
+    /// The number of fraction digits to consider when creating a fraction from a floating point value.
+    static var significantFloatingPointDigits = 4
+
     public enum FractionError: Error {
         case illegalDivision
     }
@@ -54,28 +79,66 @@ public struct Fraction {
 
     /// Initialize a Fraction
     /// - Parameter numerator: The fraction's numerator (valid range: Int.min + 1 ... Int.max)
-    /// - Parameter denominator: The fraction's denominator (valid range: Int.min + 1 ... Int.max)
+    /// - Parameter denominator: The fraction's denominator (valid range: Int.min + 1 ... Int.max, excluding 0)
+    /// - Parameter wholes: The number of wholes, which will be multiplied by the denominator and added to the numerator (valid range: Int.min + 1 ... Int.max)
     ///
     /// The lower end of the valid range for the parameters is Int.min + 1, because you cannot flip Int.min to to its positive counterpart –it results in an overflow–
     /// which may happen in the `reduce()` function.
-    public init?(numerator: Int, denominator: Int) {
+    public init?(numerator: Int, denominator: Int, wholes: Int = 0) {
         guard denominator != 0 else { return nil }
         guard numerator > Int.min, denominator > Int.min else { return nil }
 
-        self.numerator = numerator
+        self.numerator = numerator + (denominator * wholes)
         self.denominator = denominator
     }
 
     /// Initialize a Fraction from an integer
     /// - Parameter numerator: The fraction's numerator (valid range: Int.min + 1 ... Int.max)
     ///
-    /// The lower end of the valid range for the parameter is Int.min + 1, because you cannot flip Int.min to to its positive counterpart –it results in an overflow–
-    /// which may happen in the `reduce()` function.
+    /// The lower end of the valid range for the parameters is Int.min + 1, because you cannot flip Int.min to to its positive counterpart –it results in an overflow–
+    /// which may happen in the `reduce()` function. If you pass in Int.min the programme will crash (also in production).
     public init?(_ numerator: Int) {
         guard numerator > Int.min else { return nil }
 
         self.numerator = numerator
         self.denominator = 1
+    }
+
+    /// Initialize a Fraction from an integer (guaranteed)
+    /// - Parameter numerator: The fraction's numerator (valid range: Int.min + 1 ... Int.max)
+    ///
+    /// The lower end of the valid range for the parameters is Int.min + 1, because you cannot flip Int.min to to its positive counterpart –it results in an overflow–
+    /// which may happen in the `reduce()` function. If you pass in Int.min the programme will crash (also in production).
+    public init(verifiedNumerator: Int) {
+        precondition(verifiedNumerator > Int.min, "Illegal numerator value: Int.min is not allowed")
+
+        self.numerator = verifiedNumerator
+        self.denominator = 1
+    }
+
+    /// Initialize a Fraction
+    /// - Parameter verifiedNumerator: The fraction's numerator (valid range: Int.min + 1 ... Int.max)
+    /// - Parameter verifiedDenominator: The fraction's denominator (valid range: Int.min + 1 ... Int.max, excluding 0)
+    /// - Parameter wholes: The number of wholes, which will be multiplied by the denominator and added to the numerator (valid range: Int.min + 1 ... Int.max)
+    ///
+    /// It can be very inconvenient to always have to unwrap the initializer. hence, if you think you know what you are doing, you can use this guaranteed initializer.
+    /// Of course, you need to ensure you only pass in valid values. E.g. passing in a 0 for the denominator is a very bad idea. Also, passing Int.max for `wholes`
+    /// and a positive fraction with it will result in an arithmetic overflow.
+    public init(verifiedNumerator: Int, verifiedDenominator: Int, wholes: Int = 0) {
+        precondition(verifiedNumerator > Int.min, "Illegal numerator value: Int.min is not allowed")
+        precondition(verifiedDenominator != 0, "0 is an illegal value for the denominator")
+        
+        self.numerator = verifiedNumerator + (verifiedDenominator * wholes)
+        self.denominator = verifiedDenominator
+    }
+
+    /// Initialize a faction from a float literal
+    public init(float: FloatLiteralType) {
+        let multiplier: Int = Int(float)
+        let operand = float - FloatLiteralType(multiplier)
+        let divisor = pow(10.0, Double(Self.significantFloatingPointDigits))
+        let fractionInt = Int((operand * divisor).rounded())
+        self.init(verifiedNumerator: fractionInt, verifiedDenominator: Int(divisor), wholes: multiplier)
     }
 
     /// Reduce a fraction to its Greatest Common Denominator
@@ -422,6 +485,18 @@ extension Fraction: Comparable {
         let rhsNominatorProduct = rhsRed.numerator * lhsRed.denominator
 
         return lhsNominatorProduct < rhsNominatorProduct
+    }
+}
+
+extension Fraction : ExpressibleByIntegerLiteral {
+    public init(integerLiteral value: IntegerLiteralType) {
+        self.init(verifiedNumerator: value, verifiedDenominator: 1)
+    }
+}
+
+extension Fraction : ExpressibleByFloatLiteral {
+    public init(floatLiteral value: FloatLiteralType) {
+        self.init(float: value)
     }
 }
 
