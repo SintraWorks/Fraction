@@ -169,7 +169,7 @@ public struct Fraction {
     /// Fractions with negative denominator are normalized to positive denominator and negative numerator.
     public mutating func normalize() {
         if numerator >= 0 && denominator >= 0 { return }
-        if (numerator < 0 && denominator < 0) || (denominator < 0) {
+        if denominator < 0 {
             numerator *= -1
             denominator *= -1
         }
@@ -204,13 +204,13 @@ public struct Fraction {
         self.normalize()
         let normalizedOther = other.normalized()
 
-        if (denominator == normalizedOther.denominator) {
+        if denominator == normalizedOther.denominator {
             numerator += normalizedOther.numerator
         } else {
             numerator = numerator * normalizedOther.denominator + normalizedOther.numerator * denominator
             denominator = denominator * normalizedOther.denominator
         }
-        if ( reducing ) {
+        if reducing {
             self.reduce()
         }
     }
@@ -224,7 +224,7 @@ public struct Fraction {
 
         numerator += integer * denominator
 
-        if ( reducing ) {
+        if reducing {
             self.reduce()
         }
     }
@@ -254,14 +254,14 @@ public struct Fraction {
     ///   - other: The Fraction to subtract.
     ///   - reducing: A flag indicating whether to reduce the result of the subtraction to its GCD. Defaults to `true`.
     public mutating func subtract(_ other: Fraction, reducing: Bool = true) {
-        if (denominator == other.denominator) {
+        if denominator == other.denominator {
             numerator -= other.numerator
         } else {
             numerator = numerator * other.denominator - other.numerator * denominator
             denominator = denominator * other.denominator
         }
 
-        if ( reducing ) {
+        if reducing {
             self.reduce()
         }
     }
@@ -273,7 +273,7 @@ public struct Fraction {
     public mutating func subtract(_ integer: Int, reducing: Bool = true) {
             numerator -= integer * denominator
 
-        if ( reducing ) {
+        if reducing {
             self.reduce()
         }
     }
@@ -305,7 +305,7 @@ public struct Fraction {
     public mutating func multiply(by other: Fraction, reducing: Bool = true) {
         numerator = numerator * other.numerator
         denominator = denominator * other.denominator
-        if ( reducing ) {
+        if reducing {
             self.reduce()
         }
     }
@@ -316,7 +316,7 @@ public struct Fraction {
     ///   - reducing: A flag indicating whether to reduce the result of the multiplication to its GCD. Defaults to `true`.
     public mutating func multiply(by integer: Int, reducing: Bool = true) {
         numerator = numerator * integer
-        if ( reducing ) {
+        if reducing {
             self.reduce()
         }
     }
@@ -350,7 +350,7 @@ public struct Fraction {
 
         numerator = numerator * other.denominator
         denominator = denominator * other.numerator
-        if ( reducing ) {
+        if reducing {
             self.reduce()
         }
     }
@@ -365,7 +365,7 @@ public struct Fraction {
         let other = Fraction(numerator: integer, denominator: 1)!
         numerator = numerator * other.denominator
         denominator = denominator * other.numerator
-        if ( reducing ) {
+        if reducing {
             self.reduce()
         }
     }
