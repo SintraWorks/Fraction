@@ -98,7 +98,7 @@ class FractionsTests: XCTestCase {
 
         let f2 = Fraction(numerator: -1, denominator: -4)!
         let description2 = f2.description
-        XCTAssertTrue(description2 == "-1/-4", "Incorrect description for 1/4 (got \(description2.description))")
+        XCTAssertTrue(description2 == "-1/-4", "Incorrect description for -1/-4 (got \(description2.description))")
     }
 
     func testDoubleValue() {
@@ -246,18 +246,18 @@ class FractionsTests: XCTestCase {
         XCTAssertTrue(f2_8 < f2_4, "Incorrect comparison result for \(f2_8.description) < \(f2_4.description)")
         XCTAssertTrue(f2_8 < f1_2, "Incorrect comparison result for \(f2_8.description) < \(f1_2.description)")
         XCTAssertTrue(f1_4 < f9_18, "Incorrect comparison result for \(f1_4.description) < \(f9_18.description)")
-        XCTAssertTrue(f1_3 < f3_6, "Incorrect comparison for result \(f1_3.description) < \(f3_6.description)")
-        XCTAssertTrue(f1_3 < f9_18, "Incorrect comparison for result \(f1_3.description) < \(f9_18.description)")
+        XCTAssertTrue(f1_3 < f3_6, "Incorrect comparison result for  \(f1_3.description) < \(f3_6.description)")
+        XCTAssertTrue(f1_3 < f9_18, "Incorrect comparison result for  \(f1_3.description) < \(f9_18.description)")
 
-        XCTAssertTrue(f1_4 == f2_8, "Incorrect comparison for result \(f1_4.description) < \(f2_8.description)")
-        XCTAssertTrue(f2_8 == f1_4, "Incorrect comparison for result \(f2_8.description) < \(f1_4.description)")
-        XCTAssertTrue(f2_8 == f1_4, "Incorrect comparison for result \(f2_8.description) < \(f1_4.description)")
-        XCTAssertTrue(f2_4 == f1_2, "Incorrect comparison for result \(f2_4.description) < \(f1_2.description)")
-        XCTAssertTrue(f1_3 == f3_9, "Incorrect comparison for result \(f1_3.description) < \(f3_9.description)")
-        XCTAssertTrue(f1_3 == f6_18, "Incorrect comparison for result \(f1_3.description) < \(f6_18.description)")
-        XCTAssertTrue(f3_6 == f9_18, "Incorrect comparison for result \(f3_6.description) < \(f9_18.description)")
+        XCTAssertTrue(f1_4 == f2_8, "Incorrect comparison result for  \(f1_4.description) < \(f2_8.description)")
+        XCTAssertTrue(f2_8 == f1_4, "Incorrect comparison result for  \(f2_8.description) < \(f1_4.description)")
+        XCTAssertTrue(f2_8 == f1_4, "Incorrect comparison result for  \(f2_8.description) < \(f1_4.description)")
+        XCTAssertTrue(f2_4 == f1_2, "Incorrect comparison result for  \(f2_4.description) < \(f1_2.description)")
+        XCTAssertTrue(f1_3 == f3_9, "Incorrect comparison result for  \(f1_3.description) < \(f3_9.description)")
+        XCTAssertTrue(f1_3 == f6_18, "Incorrect comparison result for  \(f1_3.description) < \(f6_18.description)")
+        XCTAssertTrue(f3_6 == f9_18, "Incorrect comparison result for  \(f3_6.description) < \(f9_18.description)")
 
-        XCTAssertFalse(f2_4 == f1_4, "Incorrect comparison for result \(f2_4.description) != \(f1_4.description)")
+        XCTAssertFalse(f2_4 == f1_4, "Incorrect comparison result for  \(f2_4.description) != \(f1_4.description)")
     }
 
     func testComparableNegative() {
@@ -279,18 +279,18 @@ class FractionsTests: XCTestCase {
         XCTAssertTrue(f2_8 < f2_4, "Incorrect comparison result for \(f2_8.description) < \(f2_4.description)")
         XCTAssertTrue(f2_8 < f1_2, "Incorrect comparison result for \(f2_8.description) < \(f1_2.description)")
         XCTAssertTrue(f1_4 < f9_18, "Incorrect comparison result for \(f1_4.description) < \(f9_18.description)")
-        XCTAssertTrue(f1_3 < f3_6, "Incorrect comparison for result \(f1_3.description) < \(f3_6.description)")
-        XCTAssertTrue(f1_3 < f9_18, "Incorrect comparison for result \(f1_3.description) < \(f9_18.description)")
+        XCTAssertTrue(f1_3 < f3_6, "Incorrect comparison result for  \(f1_3.description) < \(f3_6.description)")
+        XCTAssertTrue(f1_3 < f9_18, "Incorrect comparison result for  \(f1_3.description) < \(f9_18.description)")
 
-        XCTAssertTrue(f1_4 == f2_8, "Incorrect comparison for result \(f1_4.description) == \(f2_8.description)")
-        XCTAssertTrue(f2_8 == f1_4, "Incorrect comparison for result \(f2_8.description) == \(f1_4.description)")
-        XCTAssertTrue(f2_8 == f1_4, "Incorrect comparison for result \(f2_8.description) == \(f1_4.description)")
-        XCTAssertTrue(f2_4 == f1_2, "Incorrect comparison for result \(f2_4.description) == \(f1_2.description)")
-        XCTAssertTrue(f1_3 == f3_9, "Incorrect comparison for result \(f1_3.description) == \(f3_9.description)")
-        XCTAssertTrue(f1_3 == f6_18, "Incorrect comparison for result \(f1_3.description) == \(f6_18.description)")
-        XCTAssertTrue(f3_6 == f9_18, "Incorrect comparison for result \(f3_6.description) == \(f9_18.description)")
+        XCTAssertTrue(f1_4 == f2_8, "Incorrect comparison result for  \(f1_4.description) == \(f2_8.description)")
+        XCTAssertTrue(f2_8 == f1_4, "Incorrect comparison result for  \(f2_8.description) == \(f1_4.description)")
+        XCTAssertTrue(f2_8 == f1_4, "Incorrect comparison result for  \(f2_8.description) == \(f1_4.description)")
+        XCTAssertTrue(f2_4 == f1_2, "Incorrect comparison result for  \(f2_4.description) == \(f1_2.description)")
+        XCTAssertTrue(f1_3 == f3_9, "Incorrect comparison result for  \(f1_3.description) == \(f3_9.description)")
+        XCTAssertTrue(f1_3 == f6_18, "Incorrect comparison result for  \(f1_3.description) == \(f6_18.description)")
+        XCTAssertTrue(f3_6 == f9_18, "Incorrect comparison result for  \(f3_6.description) == \(f9_18.description)")
 
-        XCTAssertFalse(f2_4 == f1_4, "Incorrect comparison for result \(f2_4.description) != \(f1_4.description)")
+        XCTAssertFalse(f2_4 == f1_4, "Incorrect comparison result for  \(f2_4.description) != \(f1_4.description)")
     }
 
     func testComparableMixedSigns() {
@@ -753,7 +753,7 @@ class FractionsTests: XCTestCase {
 }
 
 // And a bonus practical test:
-// In western music notation adding a dot after a note/rest augments it by half its value. Each additional dot half again the previously halved value.
+// In western music notation adding a dot after a note/rest augments it by half its value. Each additional dot adds half again the previously halved value.
 extension FractionsTests {
     public func dotFactorF(_ dotFactor: Int) -> Fraction? {
         if dotFactor == 0 { return nil }
@@ -769,7 +769,7 @@ extension FractionsTests {
     }
 
     func testDotFactor() {
-        for dots in 1 ... 8 { print(dotFactor(dots))
+        for dots in 1 ... 8 {
             XCTAssertEqual(dotFactorF(dots)!.doubleValue, dotFactor(dots))
         }
     }

@@ -96,7 +96,7 @@ public struct Fraction {
     /// - Parameter numerator: The fraction's numerator (valid range: Int.min + 1 ... Int.max)
     ///
     /// The lower end of the valid range for the parameters is Int.min + 1, because you cannot flip Int.min to to its positive counterpart –it results in an overflow–
-    /// which may happen in the `reduce()` function. If you pass in Int.min the programme will crash (also in production).
+    /// which may happen in the `reduce()` function. If you pass in Int.min the the initializer will fail.
     public init?(_ numerator: Int) {
         guard numerator > Int.min else { return nil }
 
