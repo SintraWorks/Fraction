@@ -104,19 +104,7 @@ public struct Fraction {
         self.denominator = 1
     }
 
-    /// Initialize a Fraction from an integer (guaranteed)
-    /// - Parameter numerator: The fraction's numerator (valid range: Int.min + 1 ... Int.max)
-    ///
-    /// The lower end of the valid range for the parameters is Int.min + 1, because you cannot flip Int.min to to its positive counterpart –it results in an overflow–
-    /// which may happen in the `reduce()` function. If you pass in Int.min the programme will crash (also in production).
-    public init(verifiedNumerator: Int) {
-        precondition(verifiedNumerator > Int.min, "Illegal numerator value: Int.min is not allowed")
-
-        self.numerator = verifiedNumerator
-        self.denominator = 1
-    }
-
-    /// Initialize a Fraction
+    /// Initialize a Fraction (guaranteed)
     /// - Parameter verifiedNumerator: The fraction's numerator (valid range: Int.min + 1 ... Int.max)
     /// - Parameter verifiedDenominator: The fraction's denominator (valid range: Int.min + 1 ... Int.max, excluding 0)
     /// - Parameter wholes: The number of wholes, which will be multiplied by the denominator and added to the numerator (valid range: Int.min + 1 ... Int.max)
@@ -124,8 +112,9 @@ public struct Fraction {
     /// It can be very inconvenient to always have to unwrap the initializer. hence, if you think you know what you are doing, you can use this guaranteed initializer.
     /// Of course, you need to ensure you only pass in valid values. E.g. passing in a 0 for the denominator is a very bad idea. Also, passing Int.max for `wholes`
     /// and a positive fraction with it will result in an arithmetic overflow.
-    public init(verifiedNumerator: Int, verifiedDenominator: Int, wholes: Int = 0) {
+    public init(verifiedNumerator: Int, verifiedDenominator: Int = 1, wholes: Int = 0) {
         precondition(verifiedNumerator > Int.min, "Illegal numerator value: Int.min is not allowed")
+        precondition(verifiedDenominator > Int.min, "Illegal denominator value: Int.min is not allowed")
         precondition(verifiedDenominator != 0, "0 is an illegal value for the denominator")
         
         self.numerator = verifiedNumerator + (verifiedDenominator * wholes)
