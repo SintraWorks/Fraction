@@ -64,18 +64,25 @@ import Foundation
 
     - Warning: Fraction will trap if any operation results in an overflow or underflow.
  */
-public struct Fraction {
+public struct Fraction: Codable {
     /// The number of fraction digits to consider when creating a fraction from a floating point value.
     static var significantFloatingPointDigits = 4
 
     public enum FractionError: Error {
+        case illegalNumerator
+        case illegalDenominator
         case illegalDivision
+        case decodingError
     }
 
     /// The fraction's numerator (valid range: Int.min + 1 ... Int.max)
     public var numerator: Int
     /// The fraction's denominator (valid range: Int.min + 1 ... Int.max)
     public var denominator: Int
+
+    enum CodingKeys: String, CodingKey, CaseIterable {
+        case numerator, denominator
+    }
 
     /// Initialize a Fraction
     /// - Parameter numerator: The fraction's numerator (valid range: Int.min + 1 ... Int.max)
@@ -104,6 +111,26 @@ public struct Fraction {
         self.denominator = 1
     }
 
+    public init(from decoder: Decoder) throws {
+        do {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            numerator = try container.decode(Int.self, forKey: .numerator)
+            denominator = try container.decode(Int.self, forKey: .denominator)
+            if numerator == Int.min { throw FractionError.illegalNumerator }
+            if denominator == 0 || denominator == Int.min { throw FractionError.illegalDenominator }
+        } catch let error where !(error is FractionError)  {
+            let container = try decoder.singleValueContainer()
+            let value = try container.decode(Double.self)
+            let multiplier: Int = Int(value)
+            let operand = value - FloatLiteralType(multiplier)
+            let divisor = pow(10.0, Double(Self.significantFloatingPointDigits))
+            let fractionInt = Int((operand * divisor).rounded())
+            numerator = fractionInt + (Int(divisor) * multiplier)
+            denominator = Int(divisor)
+            self.reduce()
+        }
+    }
+
     /// Initialize a Fraction (guaranteed)
     /// - Parameter verifiedNumerator: The fraction's numerator (valid range: Int.min + 1 ... Int.max)
     /// - Parameter verifiedDenominator: The fraction's denominator (valid range: Int.min + 1 ... Int.max, excluding 0)
@@ -128,6 +155,7 @@ public struct Fraction {
         let divisor = pow(10.0, Double(Self.significantFloatingPointDigits))
         let fractionInt = Int((operand * divisor).rounded())
         self.init(verifiedNumerator: fractionInt, verifiedDenominator: Int(divisor), wholes: multiplier)
+        reduce()
     }
 
     /// Reduce a fraction to its Greatest Common Denominator
@@ -358,6 +386,31 @@ public struct Fraction {
             self.reduce()
         }
     }
+    
+    /// Divide self by another Fraction. Caller is taking responsibility to not divide by zero.
+    /// - Parameters:
+    ///   - other: The Fraction to divide by.
+    ///   - reducing: A flag indicating whether to reduce the result of the division to its GCD. Defaults to `true`.
+    public mutating func nonZeroDivide(by other: Fraction, reducing: Bool = true) {
+        numerator = numerator * other.denominator
+        denominator = denominator * other.numerator
+        if reducing {
+            self.reduce()
+        }
+    }
+
+    /// Divide self by an integer. Caller is taking responsibility to not divide by zero.
+    /// - Parameters:
+    ///   - integer: The integer to divide by.
+    ///   - reducing: A flag indicating whether to reduce the result of the division to its GCD. Defaults to `true`.
+    public mutating func nonZeroDivide(by integer: Int, reducing: Bool = true) {
+        let other = Fraction(numerator: integer, denominator: 1)!
+        numerator = numerator * other.denominator
+        denominator = denominator * other.numerator
+        if reducing {
+            self.reduce()
+        }
+    }
 
     /// Divide a copy of `self` by another Fraction and return the result.
     /// - Parameters:
@@ -378,6 +431,26 @@ public struct Fraction {
 
         var copy = self
         try copy.divide(by: integer, reducing: reducing)
+        return copy
+    }
+
+    /// Divide a copy of `self` by another Fraction and return the result. Caller is taking responsibility to not divide by zero.
+    /// - Parameters:
+    ///   - other: The Fraction to divide by.
+    ///   - reducing: A flag indicating whether to reduce the result of the division to its GCD. Defaults to `true`.
+    public func nonZeroDividing(by other: Fraction, reducing: Bool = true) -> Fraction {
+        var copy = self
+        copy.nonZeroDivide(by: other, reducing: reducing)
+        return copy
+    }
+
+    /// Divide a copy of `self` by an integer and return the result. Caller is taking responsibility to not divide by zero.
+    /// - Parameters:
+    ///   - integer: The integer to divide by.
+    ///   - reducing: A flag indicating whether to reduce the result of the division to its GCD. Defaults to `true`.
+    public func nonZeroDividing(by integer: Int, reducing: Bool = true) -> Fraction {
+        var copy = self
+        copy.nonZeroDivide(by: integer, reducing: reducing)
         return copy
     }
 
@@ -503,5 +576,27 @@ extension Fraction {
 
     public static var one: Fraction {
         Fraction(numerator: 1, denominator: 1)!
+    }
+}
+
+public extension Fraction {
+    func power(of exponent: Int) -> Fraction {
+        if exponent == 0 { return .one }
+        if numerator == 0 { return .zero }
+        if exponent == 1 { return self }
+        
+        var result = Fraction.one
+        
+        if exponent > 0 {
+            for _ in 0 ..< exponent {
+                result *= self
+            }
+        } else {
+            for _ in 0 ..< -exponent {
+                result = result.nonZeroDividing(by: self)
+            }
+        }
+        
+        return result
     }
 }
