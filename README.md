@@ -31,7 +31,7 @@ let package = Package(
   name: "MyPackage",
   dependencies: [
     .package(
-      url: "https://github.com/sintraworks/fractions.git", 
+      url: "https://github.com/sintraworks/fraction.git", 
       .upToNextMinor(from: "0.9.0") // or `.upToNextMajor
     )
   ],
