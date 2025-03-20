@@ -224,7 +224,25 @@ class FractionsTests: XCTestCase {
         XCTAssertTrue(f4.numerator == 1, "Incorrect abs numerator value for (1, 1) (got \(f4.description)")
         XCTAssertTrue(f4.denominator == 1, "Incorrect abs denominator value for (1, 1) (got \(f4.description)")
     }
-    
+
+    func testAbsoluted() {
+        var absoluted = Fraction(numerator: 1, denominator: -1)!.absoluted()
+        XCTAssertTrue(absoluted.numerator == 1, "Incorrect abs numerator value for (1, -1) (got \(absoluted.description)")
+        XCTAssertTrue(absoluted.denominator == 1, "Incorrect abs denominator value for (1, -1) (got \(absoluted.description)")
+
+        absoluted = Fraction(numerator: -1, denominator: 1)!.absoluted()
+        XCTAssertTrue(absoluted.numerator == 1, "Incorrect abs numerator value for (-1, 1) (got \(absoluted.description)")
+        XCTAssertTrue(absoluted.denominator == 1, "Incorrect abs denominator value for (-1, 1) (got \(absoluted.description)")
+
+        absoluted = Fraction(numerator: -1, denominator: -1)!.absoluted()
+        XCTAssertTrue(absoluted.numerator == 1, "Incorrect abs numerator value for (-1, -1) (got \(absoluted.description)")
+        XCTAssertTrue(absoluted.denominator == 1, "Incorrect abs denominator value for (-1, -1) (got \(absoluted.description)")
+
+        absoluted = Fraction(numerator: 1, denominator: 1)!.absoluted()
+        XCTAssertTrue(absoluted.numerator == 1, "Incorrect abs numerator value for (1, 1) (got \(absoluted.description)")
+        XCTAssertTrue(absoluted.denominator == 1, "Incorrect abs denominator value for (1, 1) (got \(absoluted.description)")
+    }
+
     // MARK: - Utilities
     
     func testComparablePositive() {
@@ -672,7 +690,21 @@ class FractionsTests: XCTestCase {
         XCTAssertTrue(f1_4.numerator == 1 && f1_4.denominator == 3, "Incorrect result dividing 1/4 by \(f3_4.description). Expected 1/3, got \(f1_4.description)")
         
     }
-    
+
+    func testNonzeroDivideByInteger() {
+        var fraction = Fraction(verifiedNumerator: 12, verifiedDenominator: 18)
+        fraction.nonZeroDivide(by: 3)
+        XCTAssertEqual(fraction.numerator, 2)
+        XCTAssertEqual(fraction.denominator, 9)
+    }
+
+    func testNonzeroDividingByInteger() {
+        let fraction = Fraction(verifiedNumerator: 12, verifiedDenominator: 18)
+        let result = fraction.nonZeroDividing(by: 3)
+        XCTAssertEqual(result.numerator, 2)
+        XCTAssertEqual(result.denominator, 9)
+    }
+
     // MARK: - Statics and expressible
     
     func testStaticZero() {

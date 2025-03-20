@@ -23,7 +23,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 
-import Foundation
+import math_h
 
 /**
     Fraction is a value type that represents the quotient of two numbers (like `1/3`), without loss of precision, and with support for basic arithmetic operations.
@@ -136,7 +136,7 @@ public struct Fraction: Codable {
     /// - Parameter verifiedDenominator: The fraction's denominator (valid range: Int.min + 1 ... Int.max, excluding 0)
     /// - Parameter wholes: The number of wholes, which will be multiplied by the denominator and added to the numerator (valid range: Int.min + 1 ... Int.max)
     ///
-    /// It can be very inconvenient to always have to unwrap the initializer. hence, if you think you know what you are doing, you can use this guaranteed initializer.
+    /// It can be very inconvenient to always have to unwrap the initializer. Hence, if you think you know what you are doing, you can use this guaranteed initializer.
     /// Of course, you need to ensure you only pass in valid values. E.g. passing in a 0 for the denominator is a very bad idea. Also, passing Int.max for `wholes`
     /// and a positive fraction with it will result in an arithmetic overflow.
     public init(verifiedNumerator: Int, verifiedDenominator: Int = 1, wholes: Int = 0) {
@@ -405,11 +405,7 @@ public struct Fraction: Codable {
     ///   - reducing: A flag indicating whether to reduce the result of the division to its GCD. Defaults to `true`.
     public mutating func nonZeroDivide(by integer: Int, reducing: Bool = true) {
         let other = Fraction(numerator: integer, denominator: 1)!
-        numerator = numerator * other.denominator
-        denominator = denominator * other.numerator
-        if reducing {
-            self.reduce()
-        }
+        return nonZeroDivide(by: other)
     }
 
     /// Divide a copy of `self` by another Fraction and return the result.
@@ -449,19 +445,27 @@ public struct Fraction: Codable {
     ///   - integer: The integer to divide by.
     ///   - reducing: A flag indicating whether to reduce the result of the division to its GCD. Defaults to `true`.
     public func nonZeroDividing(by integer: Int, reducing: Bool = true) -> Fraction {
-        var copy = self
-        copy.nonZeroDivide(by: integer, reducing: reducing)
-        return copy
+        let other = Fraction(numerator: integer, denominator: 1)!
+        return nonZeroDividing(by: other, reducing: reducing)
     }
 
     /// Flip `nominator` and `denominator` to their positive counterpart if negative.
-    public mutating func abs() {
+    @discardableResult
+    public mutating func abs() -> Self {
         if numerator < 0 {
             numerator *= -1
         }
         if denominator < 0 {
             denominator *= -1
         }
+
+        return self
+    }
+
+    public func absoluted() -> Self {
+        var copy = self
+        copy.abs()
+        return copy
     }
 }
 
@@ -571,11 +575,11 @@ extension Fraction {
 // MARK: - Helpers -
 extension Fraction {
     public static var zero: Fraction {
-        Fraction(numerator: 0, denominator: 1)!
+        Fraction(verifiedNumerator: 0, verifiedDenominator: 1)
     }
 
     public static var one: Fraction {
-        Fraction(numerator: 1, denominator: 1)!
+        Fraction(verifiedNumerator: 1, verifiedDenominator: 1)
     }
 }
 
