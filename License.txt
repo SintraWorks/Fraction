@@ -1,4 +1,4 @@
-Copyright (c) 2020-2024 SintraWorks, António Miguel Câncio Reis Jacinto Nunes
+Copyright (c) 2020-2025 SintraWorks, António Miguel Câncio Reis Jacinto Nunes
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this source code and associated documentation files (the "SourceCode"), to deal

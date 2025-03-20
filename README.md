@@ -18,3 +18,30 @@ By default arithmetic operations will reduce the result to its **Greatest Common
         f1.add(f2, reducing: false)
 
 Fraction will trap if any operation results in an overflow or underflow.
+
+## Using **Fractions** in your project
+
+To use this package in a SwiftPM project, you need to set it up as a package dependency:
+
+```swift
+// swift-tools-version:5.9
+import PackageDescription
+
+let package = Package(
+  name: "MyPackage",
+  dependencies: [
+    .package(
+      url: "https://github.com/sintraworks/fractions.git", 
+      .upToNextMinor(from: "0.9.0") // or `.upToNextMajor
+    )
+  ],
+  targets: [
+    .target(
+      name: "MyTarget",
+      dependencies: [
+        .product(name: "Fractions", package: "fraction")
+      ]
+    )
+  ]
+)
+```

@@ -1,0 +1,32 @@
+{
+  "configurations" : [
+    {
+      "id" : "A387B5BD-9C9A-4F7B-BDC5-28EC0581FE50",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:",
+          "identifier" : "Fractions",
+          "name" : "Fractions"
+        }
+      ]
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "FractionsTests",
+        "name" : "FractionsTests"
+      }
+    }
+  ],
+  "version" : 1
+}
