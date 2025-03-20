@@ -1,4 +1,8 @@
 # Fraction
+
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FSintraWorks%2Ffraction%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/SintraWorks/fraction)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FSintraWorks%2Ffraction%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/SintraWorks/fraction)
+
 Fraction is a value type that represents the quotient of two numbers (like `1/3`), without loss of precision, and with support for basic arithmetic operations.
 
 The Fraction type supports **addition**, **subtraction**, **multiplication** and **division**, both through dedicated functions, and through overloading the corresponding operators. It also conforms to the **Comparable** protocol to allow comparing fractions and testing them for equality.
